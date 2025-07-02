@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Search Weather or Forecast for a City</h1>
+
+        <!-- Display error message if there is one -->
+        {% if error_message %}
+            <p class="error-message">{{ error_message }}</p>
+        {% endif %}
+
+        <form method="GET" action="{% url 'index' %}">
+            <div class="search-box">
+                <input type="text" id="city" name="city" class="search-bar" placeholder="Enter city name" required>
+            </div>
+
+            <p>Choose an option:</p>
+            <input type="radio" id="current_weather" name="option" value="weather" checked>
+            <label for="current_weather">Current Weather</label><br>
+
+            <input type="radio" id="forecast" name="option" value="forecast">
+            <label for="forecast">3-Day Forecast</label><br>
+
+            <button type="submit" class="button">Search</button>
+        </form>
+    </div>
+</body>
+</html>
