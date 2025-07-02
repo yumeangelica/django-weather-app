@@ -49,6 +49,38 @@ A Django-based web application that provides real-time weather data and a 3-day 
 
 ### 🐍 Local Development
 
+1. Clone and setup:
+
+   ```bash
+   git clone https://github.com/yumeangelica/django-weather-app.git
+   cd django-weather-app
+   pip install -r requirements.txt
+   ```
+
+2. Configure environment:
+
+   ```bash
+   # Create .env file with:
+   DEBUG=True
+   SECRET_KEY=your-secret-key
+   OPENWEATHERMAP_API_KEY=your-api-key
+   ALLOWED_HOSTS=localhost,127.0.0.1
+   ```
+
+3. Start development server:
+
+   ```bash
+   python manage.py runserver
+   ```
+
+4. Access the app: http://localhost:8000
+
+**Development workflow:**
+
+- Make changes to HTML/CSS/Python files
+- Refresh your browser (Cmd+R / Ctrl+R) to see changes
+- Django automatically restarts when Python files change
+
 1. Clone and navigate:
 
    ```bash
