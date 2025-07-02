@@ -1,0 +1,6 @@
+Django==5.1       # Web framework
+python-dotenv==1.0.1  # To load environment variables from a .env file
+requests==2.32.3       # For making HTTP requests
+pytz==2024.1 # For working with time zones
+gunicorn==21.2.0      # WSGI HTTP Server for UNIX
+whitenoise==6.6.0     # Static file serving for Python web apps
