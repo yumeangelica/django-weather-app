@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3-Day Forecast for {{ city }}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+
+        <div class="buttonContainer">
+          <a href="/" class="button">Back to Home</a>
+        </div>
+        <h1>3-Day Forecast for <span class="capitalize">{{ city }}</span></h1>
+
+        <div class="forecast-table-wrapper">
+            <table class="forecast-table">
+                <thead>
+                    <tr>
+                        <th class="sticky-left"></th>
+                        {% for date, day_data in forecast.items %}
+                            {% if day_data.forecasts.0.uv_index != 'N/A' %}
+                                <!-- Use formatted_date instead of date -->
+                                <th class="forecast-column-header" colspan="{{ day_data.forecasts|length }}">
+                                    {{ day_data.formatted_date }}
+                                </th>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="sticky-left">Hour</td>
+                        {% for day_data in forecast.values %}
+                            {% for forecast in day_data.forecasts %}
+                                {% if forecast.uv_index != 'N/A' %}
+                                    <td class="forecast-column-cell">{{ forecast.hour }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="sticky-left">Temp (°C)</td>
+                        {% for day_data in forecast.values %}
+                            {% for forecast in day_data.forecasts %}
+                                {% if forecast.uv_index != 'N/A' %}
+                                    <td class="forecast-column-cell">{{ forecast.temperature }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="sticky-left">Description</td>
+                        {% for day_data in forecast.values %}
+                            {% for forecast in day_data.forecasts %}
+                                {% if forecast.uv_index != 'N/A' %}
+                                    <td class="forecast-column-cell">{{ forecast.description }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="sticky-left">Humidity (%)</td>
+                        {% for day_data in forecast.values %}
+                            {% for forecast in day_data.forecasts %}
+                                {% if forecast.uv_index != 'N/A' %}
+                                    <td class="forecast-column-cell">{{ forecast.humidity }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="sticky-left">Wind Speed (m/s)</td>
+                        {% for day_data in forecast.values %}
+                            {% for forecast in day_data.forecasts %}
+                                {% if forecast.uv_index != 'N/A' %}
+                                    <td class="forecast-column-cell">{{ forecast.wind_speed }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="sticky-left">UV Index</td>
+                        {% for day_data in forecast.values %}
+                            {% for forecast in day_data.forecasts %}
+                                {% if forecast.uv_index != 'N/A' %}
+                                    <td class="forecast-column-cell">{{ forecast.uv_index }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
