@@ -1,99 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3-Day Forecast for {{ city }}</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3-Day Forecast for {{ city|capfirst }} - Weather App</title>
+  <meta name="description" content="3-day hourly weather forecast for {{ city|capfirst }}">
+  {% load static %}
+  {% now "U" as timestamp %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ timestamp }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
+
 <body>
-    <div class="container">
+  <div class="container">
+    <header class="header">
+      <h1>3-Day Forecast</h1>
+      <p>{{ city|capfirst }}</p>
+    </header>
 
-        <div class="buttonContainer">
-          <a href="/" class="button">Back to Home</a>
-        </div>
-        <h1>3-Day Forecast for <span class="capitalize">{{ city }}</span></h1>
+    <main class="main-content">
+      <div class="nav-container">
+        <a href="/" class="button">Back to Search</a>
+        <a href="/?city={{ city }}&option=weather" class="button">Current Weather</a>
+      </div>
 
+      <div class="forecast-container">
+        <!-- Desktop Table View -->
         <div class="forecast-table-wrapper">
-            <table class="forecast-table">
-                <thead>
-                    <tr>
-                        <th class="sticky-left"></th>
-                        {% for date, day_data in forecast.items %}
-                            {% if day_data.forecasts.0.uv_index != 'N/A' %}
-                                <!-- Use formatted_date instead of date -->
-                                <th class="forecast-column-header" colspan="{{ day_data.forecasts|length }}">
-                                    {{ day_data.formatted_date }}
-                                </th>
-                            {% endif %}
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="sticky-left">Hour</td>
-                        {% for day_data in forecast.values %}
-                            {% for forecast in day_data.forecasts %}
-                                {% if forecast.uv_index != 'N/A' %}
-                                    <td class="forecast-column-cell">{{ forecast.hour }}</td>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                    </tr>
-                    <tr>
-                        <td class="sticky-left">Temp (°C)</td>
-                        {% for day_data in forecast.values %}
-                            {% for forecast in day_data.forecasts %}
-                                {% if forecast.uv_index != 'N/A' %}
-                                    <td class="forecast-column-cell">{{ forecast.temperature }}</td>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                    </tr>
-                    <tr>
-                        <td class="sticky-left">Description</td>
-                        {% for day_data in forecast.values %}
-                            {% for forecast in day_data.forecasts %}
-                                {% if forecast.uv_index != 'N/A' %}
-                                    <td class="forecast-column-cell">{{ forecast.description }}</td>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                    </tr>
-                    <tr>
-                        <td class="sticky-left">Humidity (%)</td>
-                        {% for day_data in forecast.values %}
-                            {% for forecast in day_data.forecasts %}
-                                {% if forecast.uv_index != 'N/A' %}
-                                    <td class="forecast-column-cell">{{ forecast.humidity }}</td>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                    </tr>
-                    <tr>
-                        <td class="sticky-left">Wind Speed (m/s)</td>
-                        {% for day_data in forecast.values %}
-                            {% for forecast in day_data.forecasts %}
-                                {% if forecast.uv_index != 'N/A' %}
-                                    <td class="forecast-column-cell">{{ forecast.wind_speed }}</td>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                    </tr>
-                    <tr>
-                        <td class="sticky-left">UV Index</td>
-                        {% for day_data in forecast.values %}
-                            {% for forecast in day_data.forecasts %}
-                                {% if forecast.uv_index != 'N/A' %}
-                                    <td class="forecast-column-cell">{{ forecast.uv_index }}</td>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                    </tr>
-                </tbody>
-            </table>
+          <table class="forecast-table">
+            <thead>
+              <tr>
+                <th class="sticky-left"></th>
+                {% for date, day_data in forecast.items %}
+                <th class="forecast-column-header" colspan="{{ day_data.forecasts|length }}">
+                  {{ day_data.formatted_date }}
+                </th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="sticky-left">Time</td>
+                {% for day_data in forecast.values %}
+                {% for forecast in day_data.forecasts %}
+                <td class="forecast-column-cell">{{ forecast.hour }}</td>
+                {% endfor %}
+                {% endfor %}
+              </tr>
+              <tr>
+                <td class="sticky-left">Temperature</td>
+                {% for day_data in forecast.values %}
+                {% for forecast in day_data.forecasts %}
+                <td class="forecast-column-cell">{{ forecast.temperature }}°C</td>
+                {% endfor %}
+                {% endfor %}
+              </tr>
+              <tr>
+                <td class="sticky-left">Weather</td>
+                {% for day_data in forecast.values %}
+                {% for forecast in day_data.forecasts %}
+                <td class="forecast-column-cell">{{ forecast.description }}</td>
+                {% endfor %}
+                {% endfor %}
+              </tr>
+              <tr>
+                <td class="sticky-left">Humidity</td>
+                {% for day_data in forecast.values %}
+                {% for forecast in day_data.forecasts %}
+                <td class="forecast-column-cell">{{ forecast.humidity }}%</td>
+                {% endfor %}
+                {% endfor %}
+              </tr>
+              <tr>
+                <td class="sticky-left">Wind Speed</td>
+                {% for day_data in forecast.values %}
+                {% for forecast in day_data.forecasts %}
+                <td class="forecast-column-cell">{{ forecast.wind_speed }} m/s</td>
+                {% endfor %}
+                {% endfor %}
+              </tr>
+              <tr>
+                <td class="sticky-left">UV Index</td>
+                {% for day_data in forecast.values %}
+                {% for forecast in day_data.forecasts %}
+                <td class="forecast-column-cell">{{ forecast.uv_index|default:"N/A" }}</td>
+                {% endfor %}
+                {% endfor %}
+              </tr>
+            </tbody>
+          </table>
         </div>
-    </div>
+
+        <!-- Mobile Card View -->
+        <div class="forecast-cards">
+          {% for date, day_data in forecast.items %}
+          <div class="forecast-day-card">
+            <div class="forecast-day-header">
+              <div class="forecast-day-title">{{ day_data.formatted_date }}</div>
+            </div>
+            <div class="forecast-hours">
+              {% for forecast in day_data.forecasts %}
+              <div class="forecast-hour-card">
+                <div class="forecast-hour-time">{{ forecast.hour }}</div>
+                <div class="forecast-hour-temp">{{ forecast.temperature }}°</div>
+                <div class="forecast-hour-desc">{{ forecast.description }}</div>
+                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">
+                  {{ forecast.humidity }}% | {{ forecast.wind_speed }}m/s
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-light);">
+                  UV {{ forecast.uv_index|default:"N/A" }}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </main>
+  </div>
 </body>
+
 </html>
