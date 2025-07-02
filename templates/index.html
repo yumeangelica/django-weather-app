@@ -1,35 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App - Your Modern Weather Companion</title>
+  <meta name="description" content="Get accurate weather forecasts and current conditions for any city worldwide">
+  {% load static %}
+  {% now "U" as timestamp %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ timestamp }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
+
 <body>
-    <div class="container">
-        <h1>Search Weather or Forecast for a City</h1>
+  <div class="container">
+    <header class="header">
+      <h1>Django weather app</h1>
+      <p>Your beautiful weather companion</p>
+    </header>
 
-        <!-- Display error message if there is one -->
-        {% if error_message %}
-            <p class="error-message">{{ error_message }}</p>
-        {% endif %}
+    <main class="main-content">
+      <!-- Display error message if there is one -->
+      {% if error_message %}
+      <div class="error-message">
+        {{ error_message }}
+      </div>
+      {% endif %}
 
-        <form method="GET" action="{% url 'index' %}">
-            <div class="search-box">
-                <input type="text" id="city" name="city" class="search-bar" placeholder="Enter city name" required>
-            </div>
+      <form method="GET" action="{% url 'index' %}" class="search-form">
+        <div class="search-box">
+          <input type="text" id="city" name="city" class="search-bar" placeholder="Enter city name (e.g., Helsinki, London)" required
+            autocomplete="address-level2">
+        </div>
 
-            <p>Choose an option:</p>
+        <div class="radio-group">
+          <p>Choose what you'd like to see:</p>
+
+          <label class="radio-option">
             <input type="radio" id="current_weather" name="option" value="weather" checked>
-            <label for="current_weather">Current Weather</label><br>
+            <span>
+              <strong>Current Weather</strong><br>
+              <small>Real-time conditions and detailed info</small>
+            </span>
+          </label>
 
+          <label class="radio-option">
             <input type="radio" id="forecast" name="option" value="forecast">
-            <label for="forecast">3-Day Forecast</label><br>
+            <span>
+              <strong>3-Day Forecast</strong><br>
+              <small>Hourly predictions for the next 3 days</small>
+            </span>
+          </label>
+        </div>
 
-            <button type="submit" class="button">Search</button>
-        </form>
-    </div>
+        <button type="submit" class="button">
+          Get Weather
+        </button>
+      </form>
+    </main>
+  </div>
+
+  <script>
+    // Add interactivity for radio buttons
+    const radioOptions = document.querySelectorAll('.radio-option');
+    const radioInputs = document.querySelectorAll('input[type="radio"]');
+
+    radioInputs.forEach(input => {
+      input.addEventListener('change', function () {
+        radioOptions.forEach(option => option.classList.remove('checked'));
+        if (this.checked) {
+          this.closest('.radio-option').classList.add('checked');
+        }
+      });
+    });
+
+    // Set initial checked state
+    document.querySelector('input[type="radio"]:checked').closest('.radio-option').classList.add('checked');
+  </script>
 </body>
+
 </html>
