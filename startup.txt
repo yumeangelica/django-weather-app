@@ -5,4 +5,4 @@
 PYTHON_VERSION=3.12
 
 # Startup command for Azure App Service
-gunicorn --bind=0.0.0.0 --timeout 600 online_weather_view.wsgi:application
+gunicorn --bind=0.0.0.0 --timeout 600 django_weather_app.wsgi:application
