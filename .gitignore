@@ -7,6 +7,10 @@
 *.p12
 *.p8
 
+# Deploy scripts (temporary)
+deploy-azure.sh
+deploy-azure-appservice.sh
+
 # Python
 __pycache__/
 *.py[cod]
