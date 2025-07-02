@@ -1,38 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather for {{ city }}</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <div class="container">
-      <div class="buttonContainer">
-        <a href="/" class="button">Back to Home</a>
-      </div>
-        <h1>Weather for <span class="capitalize">{{ city }}</span> on {{ weather.date }}</h1>
 
-        <div class="weather-info">
-            <ul>
-                <li><strong>Temperature:</strong> {{ weather.temperature }}°C</li>
-                <li><strong>Feels Like:</strong> {{ weather.feels_like }}°C</li>
-                <li><strong>Max Temperature:</strong> {{ weather.temp_max }}°C</li>
-                <li><strong>Min Temperature:</strong> {{ weather.temp_min }}°C</li>
-                <li><strong>Description:</strong> {{ weather.description }}</li>
-                <li><strong>Humidity:</strong> {{ weather.humidity }}%</li>
-                <li><strong>Wind Speed:</strong> {{ weather.wind_speed }} m/s</li>
-                <li><strong>Wind Direction:</strong> {{ weather.wind_direction }}°</li>
-                <li><strong>Cloudiness:</strong> {{ weather.cloudiness }}%</li>
-                <li><strong>Visibility:</strong> {{ weather.visibility }}</li>
-                <li><strong>Rain (Last Hour):</strong> {{ weather.rain }}</li>
-                <li><strong>Snow (Last Hour):</strong> {{ weather.snow }}</li>
-                <li><strong>UV Index:</strong> {{ weather.uv_index }}</li>
-                <li><strong>Sunrise:</strong> {{ weather.sunrise }}</li>
-                <li><strong>Sunset:</strong> {{ weather.sunset }}</li>
-            </ul>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather in {{ city|capfirst }} - Weather App</title>
+  <meta name="description" content="Current weather conditions for {{ city|capfirst }}">
+  {% load static %}
+  {% now "U" as timestamp %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ timestamp }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Weather in {{ city|capfirst }}</h1>
+      <p class="weather-date">{{ weather.date }}</p>
+    </header>
+
+    <main class="main-content">
+      <div class="nav-container">
+        <a href="/" class="button">← Back to Search</a>
+      </div>
+
+      <!-- Main Temperature Display -->
+      <div class="temp-main">
+        <div class="temp-value">{{ weather.temperature }}°</div>
+        <div class="temp-description">{{ weather.description }}</div>
+        <div style="margin-top: 1rem; opacity: 0.8;">
+          Feels like {{ weather.feels_like }}°C
         </div>
-    </div>
+      </div>
+
+      <!-- Weather Details Grid -->
+      <div class="weather-card">
+        <div class="weather-header">
+          <h2>Weather Details</h2>
+        </div>
+
+        <div class="weather-grid">
+          <div class="weather-item">
+            <div class="weather-item-header">
+              <span class="weather-item-label">Temperature Range</span>
+            </div>
+            <div class="weather-item-value">
+              {{ weather.temp_max }}° / {{ weather.temp_min }}°
+              <span class="weather-item-unit">C</span>
+            </div>
+          </div>
+
+          <div class="weather-item">
+            <div class="weather-item-header">
+              <span class="weather-item-label">Humidity</span>
+            </div>
+            <div class="weather-item-value">
+              {{ weather.humidity }}
+              <span class="weather-item-unit">%</span>
+            </div>
+          </div>
+
+          <div class="weather-item">
+            <div class="weather-item-header">
+              <span class="weather-item-label">Wind Speed</span>
+            </div>
+            <div class="weather-item-value">
+              {{ weather.wind_speed }}
+              <span class="weather-item-unit">m/s</span>
+            </div>
+          </div>
+
+          <div class="weather-item">
+            <div class="weather-item-header">
+              <span class="weather-item-label">Wind Direction</span>
+            </div>
+            <div class="weather-item-value">
+              {{ weather.wind_direction }}
+              <span class="weather-item-unit">°</span>
+            </div>
+          </div>
+
+          <div class="weather-item">
+            <div class="weather-item-header">
+              <span class="weather-item-label">Cloudiness</span>
+            </div>
+            <div class="weather-item-value">
+              {{ weather.cloudiness }}
+              <span class="weather-item-unit">%</span>
+            </div>
+          </div>
+
+          <div class="weather-item">
+            <div class="weather-item-header">
+              <span class="weather-item-label">Visibility</span>
+            </div>
+            <div class="weather-item-value">
+              {{ weather.visibility }}
+            </div>
+          </div>
+
+          <div class="weather-item">
+            <div class="weather-item-header">
+              <span class="weather-item-label">UV Index</span>
+            </div>
+            <div class="weather-item-value">
+              {{ weather.uv_index }}
+            </div>
+          </div>
+
+          <div class="weather-item">
+            <div class="weather-item-header">
+              <span class="weather-item-label">Rain (Last Hour)</span>
+            </div>
+            <div class="weather-item-value">
+              {{ weather.rain|default:"0 mm" }}
+            </div>
+          </div>
+
+          <div class="weather-item">
+            <div class="weather-item-header">
+              <span class="weather-item-label">Snow (Last Hour)</span>
+            </div>
+            <div class="weather-item-value">
+              {{ weather.snow|default:"0 mm" }}
+            </div>
+          </div>
+
+          <div class="weather-item">
+            <div class="weather-item-header">
+              <span class="weather-item-label">Sunrise</span>
+            </div>
+            <div class="weather-item-value">
+              {{ weather.sunrise }}
+            </div>
+          </div>
+
+          <div class="weather-item">
+            <div class="weather-item-header">
+              <span class="weather-item-label">Sunset</span>
+            </div>
+            <div class="weather-item-value">
+              {{ weather.sunset }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick action to get forecast -->
+      <div style="text-align: center; margin-top: 2rem;">
+        <a href="/?city={{ city }}&option=forecast" class="button">
+          View 3-Day Forecast
+        </a>
+      </div>
+    </main>
+  </div>
 </body>
+
 </html>
