@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather for {{ city }}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+      <div class="buttonContainer">
+        <a href="/" class="button">Back to Home</a>
+      </div>
+        <h1>Weather for <span class="capitalize">{{ city }}</span> on {{ weather.date }}</h1>
+
+        <div class="weather-info">
+            <ul>
+                <li><strong>Temperature:</strong> {{ weather.temperature }}°C</li>
+                <li><strong>Feels Like:</strong> {{ weather.feels_like }}°C</li>
+                <li><strong>Max Temperature:</strong> {{ weather.temp_max }}°C</li>
+                <li><strong>Min Temperature:</strong> {{ weather.temp_min }}°C</li>
+                <li><strong>Description:</strong> {{ weather.description }}</li>
+                <li><strong>Humidity:</strong> {{ weather.humidity }}%</li>
+                <li><strong>Wind Speed:</strong> {{ weather.wind_speed }} m/s</li>
+                <li><strong>Wind Direction:</strong> {{ weather.wind_direction }}°</li>
+                <li><strong>Cloudiness:</strong> {{ weather.cloudiness }}%</li>
+                <li><strong>Visibility:</strong> {{ weather.visibility }}</li>
+                <li><strong>Rain (Last Hour):</strong> {{ weather.rain }}</li>
+                <li><strong>Snow (Last Hour):</strong> {{ weather.snow }}</li>
+                <li><strong>UV Index:</strong> {{ weather.uv_index }}</li>
+                <li><strong>Sunrise:</strong> {{ weather.sunrise }}</li>
+                <li><strong>Sunset:</strong> {{ weather.sunset }}</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
