@@ -26,12 +26,23 @@
       <div class="error-message">
         {{ error_message }}
       </div>
-      {% endif %}
 
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const errorMsg = document.querySelector('.error-message');
+          if (errorMsg) {
+            setTimeout(() => {
+              errorMsg.style.display = 'none';
+            }, 5000);
+          }
+        });
+      </script>
+      {% endif %}
+      <!-- do not prevent -->
       <form method="GET" action="{% url 'index' %}" class="search-form">
         <div class="search-box">
           <input type="text" id="city" name="city" class="search-bar" placeholder="Enter city name (e.g., Helsinki, London)" required
-            autocomplete="address-level2">
+            autocomplete="address-level2" value="{{ city|default_if_none:'' }}">
         </div>
 
         <div class="radio-group">
@@ -78,6 +89,7 @@
     // Set initial checked state
     document.querySelector('input[type="radio"]:checked').closest('.radio-option').classList.add('checked');
   </script>
+  {% include "partials/footer.html" %}
 </body>
 
 </html>
