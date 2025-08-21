@@ -70,13 +70,18 @@ A Django-based web application that provides real-time weather data and a 3-day 
    DEV_TEST_IP=your-ip-for-testing  # Optional: for local geolocation testing
    ```
 
-3. Start development server:
+3. **Download GeoIP database**:
+
+   - Follow instructions in `geoip/README.md` to download the GeoLite2 database
+   - This is required for IP-based geolocation functionality
+
+4. Start development server:
 
    ```bash
    python manage.py runserver
    ```
 
-4. Access the app: http://localhost:8000
+5. Access the app: http://localhost:8000
 
 **Development workflow:**
 
@@ -109,7 +114,11 @@ A Django-based web application that provides real-time weather data and a 3-day 
      DEV_TEST_IP=your_ip_for_testing  # Optional: for local geolocation testing
      ```
 
-4. Run migrations and start server:
+4. **Download GeoIP database**:
+
+   - Follow instructions in `geoip/README.md` to download the GeoLite2 database
+
+5. Run migrations and start server:
 
    ```bash
    python manage.py migrate
@@ -117,7 +126,7 @@ A Django-based web application that provides real-time weather data and a 3-day 
    python manage.py runserver
    ```
 
-5. Visit: http://127.0.0.1:8000
+6. Visit: http://127.0.0.1:8000
 
 ## Azure Deployment
 
