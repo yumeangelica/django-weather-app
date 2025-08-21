@@ -21,8 +21,11 @@
     </header>
 
     <main class="main-content">
-      <div class="nav-container">
+      <div class="nav-container nav-center">
         <a href="/" class="button">← Back to Search</a>
+        <a href="/?city={{ city }}&option=forecast" class="button">
+          View 3-Day Forecast
+        </a>
       </div>
 
       <!-- Main Temperature Display -->
@@ -147,14 +150,9 @@
         </div>
       </div>
 
-      <!-- Quick action to get forecast -->
-      <div style="text-align: center; margin-top: 2rem;">
-        <a href="/?city={{ city }}&option=forecast" class="button">
-          View 3-Day Forecast
-        </a>
-      </div>
     </main>
   </div>
+  {% include "partials/footer.html" %}
 </body>
 
 </html>

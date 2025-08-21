@@ -44,6 +44,14 @@ db.sqlite3-journal
 staticfiles/
 media/
 
+# GeoIP databases (large files, should be downloaded separately)
+*.mmdb
+GeoLite2-*.mmdb
+GeoIP2-*.mmdb
+geoip/*.mmdb
+# Keep the README but ignore database files
+!geoip/README.md
+
 # Virtual environments
 .venv/
 venv/
@@ -89,3 +97,26 @@ coverage.xml
 *.bak
 *.backup
 *.old
+
+# Cache files
+.cache/
+*.cache
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+
+# Node modules (if any frontend dependencies)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# SSL certificates and keys
+*.crt
+*.cert
+*.pem
+*.key
+ssl/
+certificates/
