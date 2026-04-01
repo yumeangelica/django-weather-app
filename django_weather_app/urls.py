@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from django.http import JsonResponse
 
 from weather import views
@@ -30,5 +30,9 @@ urlpatterns = [
     # This URL fetches the current weather for the given city
     path('weather/', views.current_weather_view, name='current_weather'),
     path('', views.index, name='index'),
+    # Catch-all for 404s (works with DEBUG=True locally)
+    re_path(r'^(?:.*)$', views.custom_404, name='404'),
 ]
+
+handler404 = views.custom_404
 
