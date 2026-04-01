@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3-Day Forecast for {{ city|capfirst }} - Weather App</title>
+  <title>3-Day Forecast for {{ city|capfirst }} — Weather App</title>
   <meta name="description" content="3-day hourly weather forecast for {{ city|capfirst }}">
   {% load static %}
   {% now "U" as timestamp %}
@@ -21,13 +21,13 @@
     </header>
 
     <main class="main-content">
-      <div class="nav-container nav-center">
+      <nav class="nav-container nav-center">
         <a href="/" class="button">← Back to Search</a>
         <a href="/?city={{ city }}&option=weather" class="button">Current Weather</a>
-      </div>
+      </nav>
 
       <div class="forecast-container">
-        <!-- Desktop Table View -->
+        <!-- Desktop Table -->
         <div class="forecast-table-wrapper">
           <table class="forecast-table">
             <thead>
@@ -93,7 +93,7 @@
           </table>
         </div>
 
-        <!-- Mobile Card View -->
+        <!-- Mobile Cards -->
         <div class="forecast-cards">
           {% for date, day_data in forecast.items %}
           <div class="forecast-day-card">
@@ -106,10 +106,10 @@
                 <div class="forecast-hour-time">{{ forecast.hour }}</div>
                 <div class="forecast-hour-temp">{{ forecast.temperature }}°</div>
                 <div class="forecast-hour-desc">{{ forecast.description }}</div>
-                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">
-                  {{ forecast.humidity }}% | {{ forecast.wind_speed }}m/s
+                <div class="forecast-hour-meta">
+                  {{ forecast.humidity }}% · {{ forecast.wind_speed }} m/s
                 </div>
-                <div style="font-size: 0.75rem; color: var(--text-light);">
+                <div class="forecast-hour-meta">
                   UV {{ forecast.uv_index|default:"N/A" }}
                 </div>
               </div>
@@ -120,8 +120,9 @@
         </div>
       </div>
     </main>
+
+    {% include "partials/footer.html" %}
   </div>
-  {% include "partials/footer.html" %}
 </body>
 
 </html>
