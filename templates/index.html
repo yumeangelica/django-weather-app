@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weather App - Your Modern Weather Companion</title>
+  <title>Weather App — Your Modern Weather Companion</title>
   <meta name="description" content="Get accurate weather forecasts and current conditions for any city worldwide">
   {% load static %}
   {% now "U" as timestamp %}
@@ -16,33 +16,41 @@
 <body>
   <div class="container">
     <header class="header">
-      <h1>Django weather app</h1>
+      <h1>Django Weather App</h1>
       <p>Your beautiful weather companion</p>
     </header>
 
     <main class="main-content">
-      <!-- Display error message if there is one -->
       {% if error_message %}
-      <div class="error-message">
+      <div class="error-message" role="alert">
         {{ error_message }}
       </div>
-
       <script>
         document.addEventListener('DOMContentLoaded', function () {
           const errorMsg = document.querySelector('.error-message');
           if (errorMsg) {
             setTimeout(() => {
-              errorMsg.style.display = 'none';
+              errorMsg.style.opacity = '0';
+              errorMsg.style.transition = 'opacity 0.4s ease';
+              setTimeout(() => errorMsg.style.display = 'none', 400);
             }, 5000);
           }
         });
       </script>
       {% endif %}
-      <!-- do not prevent -->
+
       <form method="GET" action="{% url 'index' %}" class="search-form">
         <div class="search-box">
-          <input type="text" id="city" name="city" class="search-bar" placeholder="Enter city name (e.g., Helsinki, London)" required
-            autocomplete="address-level2" value="{{ city|default_if_none:'' }}">
+          <input
+            type="text"
+            id="city"
+            name="city"
+            class="search-bar"
+            placeholder="Enter city name (e.g., Helsinki, London)"
+            required
+            autocomplete="address-level2"
+            value="{{ city|default_if_none:'' }}"
+          >
         </div>
 
         <div class="radio-group">
@@ -70,10 +78,11 @@
         </button>
       </form>
     </main>
+
+    {% include "partials/footer.html" %}
   </div>
 
   <script>
-    // Add interactivity for radio buttons
     const radioOptions = document.querySelectorAll('.radio-option');
     const radioInputs = document.querySelectorAll('input[type="radio"]');
 
@@ -86,10 +95,10 @@
       });
     });
 
-    // Set initial checked state
-    document.querySelector('input[type="radio"]:checked').closest('.radio-option').classList.add('checked');
+    document.querySelector('input[type="radio"]:checked')
+      ?.closest('.radio-option')
+      ?.classList.add('checked');
   </script>
-  {% include "partials/footer.html" %}
 </body>
 
 </html>

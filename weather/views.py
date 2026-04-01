@@ -50,3 +50,7 @@ def current_weather_view(request):
     if weather:
         return render(request, 'current_weather.html', {'weather': weather, 'city': city})
     return HttpResponse(f'Sorry, the weather data for {city.capitalize()} could not be retrieved.')
+
+def custom_404(request, exception=None):
+    """Handle 404 errors with custom page."""
+    return render(request, '404.html', {'error_message': 'Page not found.'}, status=404)

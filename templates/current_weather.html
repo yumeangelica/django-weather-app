@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weather in {{ city|capfirst }} - Weather App</title>
+  <title>Weather in {{ city|capfirst }} — Weather App</title>
   <meta name="description" content="Current weather conditions for {{ city|capfirst }}">
   {% load static %}
   {% now "U" as timestamp %}
@@ -21,23 +21,21 @@
     </header>
 
     <main class="main-content">
-      <div class="nav-container nav-center">
+      <nav class="nav-container nav-center">
         <a href="/" class="button">← Back to Search</a>
-        <a href="/?city={{ city }}&option=forecast" class="button">
-          View 3-Day Forecast
-        </a>
-      </div>
+        <a href="/?city={{ city }}&option=forecast" class="button">View 3-Day Forecast</a>
+      </nav>
 
-      <!-- Main Temperature Display -->
+      <!-- Temperature Hero -->
       <div class="temp-main">
         <div class="temp-value">{{ weather.temperature }}°</div>
         <div class="temp-description">{{ weather.description }}</div>
-        <div style="margin-top: 1rem; opacity: 0.8;">
+        <div style="margin-top: 0.75rem; color: var(--color-text-light); font-size: 0.95rem;">
           Feels like {{ weather.feels_like }}°C
         </div>
       </div>
 
-      <!-- Weather Details Grid -->
+      <!-- Weather Details -->
       <div class="weather-card">
         <div class="weather-header">
           <h2>Weather Details</h2>
@@ -59,8 +57,7 @@
               <span class="weather-item-label">Humidity</span>
             </div>
             <div class="weather-item-value">
-              {{ weather.humidity }}
-              <span class="weather-item-unit">%</span>
+              {{ weather.humidity }}<span class="weather-item-unit">%</span>
             </div>
           </div>
 
@@ -69,8 +66,7 @@
               <span class="weather-item-label">Wind Speed</span>
             </div>
             <div class="weather-item-value">
-              {{ weather.wind_speed }}
-              <span class="weather-item-unit">m/s</span>
+              {{ weather.wind_speed }}<span class="weather-item-unit"> m/s</span>
             </div>
           </div>
 
@@ -79,8 +75,7 @@
               <span class="weather-item-label">Wind Direction</span>
             </div>
             <div class="weather-item-value">
-              {{ weather.wind_direction }}
-              <span class="weather-item-unit">°</span>
+              {{ weather.wind_direction }}<span class="weather-item-unit">°</span>
             </div>
           </div>
 
@@ -89,8 +84,7 @@
               <span class="weather-item-label">Cloudiness</span>
             </div>
             <div class="weather-item-value">
-              {{ weather.cloudiness }}
-              <span class="weather-item-unit">%</span>
+              {{ weather.cloudiness }}<span class="weather-item-unit">%</span>
             </div>
           </div>
 
@@ -149,10 +143,10 @@
           </div>
         </div>
       </div>
-
     </main>
+
+    {% include "partials/footer.html" %}
   </div>
-  {% include "partials/footer.html" %}
 </body>
 
 </html>
