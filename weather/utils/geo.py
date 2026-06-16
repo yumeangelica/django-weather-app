@@ -1,10 +1,13 @@
 # weather/utils/geo.py
 
+import logging
 from functools import lru_cache
 import os
 from ipware import get_client_ip  # type: ignore
 from django.contrib.gis.geoip2 import GeoIP2
 from django_weather_app import settings
+
+logger = logging.getLogger(__name__)
 
 @lru_cache
 def _geoip():
@@ -19,8 +22,7 @@ def get_client_ip_address(request):
     """
 
     ip, is_routable = get_client_ip(request)
-    if settings.DEBUG:
-        print(f"Client IP: {ip}, Is routable: {is_routable}")  # Debug
+    logger.debug("Client IP: %s, Is routable: %s", ip, is_routable)
     return ip if ip and is_routable else None
 
 def get_city_by_ip(ip: str | None) -> str | None:
@@ -30,15 +32,12 @@ def get_city_by_ip(ip: str | None) -> str | None:
     try:
         geoip_instance = _geoip()
         result = geoip_instance.city(ip)
-        if settings.DEBUG:
-            print(f"Full GeoIP result: {result}")  # Debug - show full result
+        logger.debug("Full GeoIP result: %s", result)
         city = result.get("city")
-        if settings.DEBUG:
-            print(f"GeoIP city lookup result: {city}")  # Debug
+        logger.debug("GeoIP city lookup result: %s", city)
         return city
-    except Exception as e:
-        if settings.DEBUG:
-            print(f"GeoIP error for IP {ip}: {e}")  # Debug - show IP
+    except Exception:
+        logger.warning("GeoIP lookup failed for IP %s", ip, exc_info=True)
         return None
 
 def index(request):
@@ -47,28 +46,23 @@ def index(request):
     In DEBUG mode on localhost, use test IP for GeoIP lookup when real IP is not available.
     """
     ip = get_client_ip_address(request)
-    if settings.DEBUG:
-        print(f"Client IP address: {ip}")  # Debug
+    logger.debug("Client IP address: %s", ip)
 
-        # In local development, use test IP if real IP is not available
+    # In local development, use test IP if real IP is not available
     if settings.DEBUG and not ip:
         test_ip = os.getenv('DEV_TEST_IP')
-        if settings.DEBUG:
-            print(f"DEBUG mode: using test IP {test_ip} for GeoIP lookup")  # Debug
+        logger.debug("DEBUG mode: using test IP %s for GeoIP lookup", test_ip)
         city = get_city_by_ip(test_ip)
         # If GeoIP doesn't return a city, use default fallback
         if not city:
             city = "Helsinki"
-            if settings.DEBUG:
-                print("DEBUG mode: GeoIP didn't return city, using fallback 'Helsinki'")
+            logger.debug("DEBUG mode: GeoIP didn't return city, using fallback 'Helsinki'")
     else:
         city = get_city_by_ip(ip)
         # If no city found in production, use Helsinki fallback
         if not city:
             city = "Helsinki"
-            if settings.DEBUG:
-                print("No city found for IP, using fallback city: Helsinki")
+            logger.debug("No city found for IP, using fallback city: Helsinki")
 
-    if settings.DEBUG:
-        print(f"City determined from request: {city}")  # Debug
+    logger.debug("City determined from request: %s", city)
     return city

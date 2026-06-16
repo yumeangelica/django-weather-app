@@ -1,5 +1,17 @@
+import logging
 from requests import get
 from datetime import datetime, timedelta
+
+logger = logging.getLogger(__name__)
+
+def _default_uv_forecast():
+    """Return moderate default UV values for the next 3 days."""
+    forecast = []
+    for i in range(3):
+        date = datetime.now() + timedelta(days=i)
+        date_str = date.strftime("%Y-%m-%d")
+        forecast.append({'date': date_str, 'uv': 5})  # Default moderate UV
+    return forecast
 
 def get_uv_forecast(location: str, openweathermap_api_key: str):
     """
@@ -10,11 +22,15 @@ def get_uv_forecast(location: str, openweathermap_api_key: str):
         geo_url = f'http://api.openweathermap.org/geo/1.0/direct?q={location}&limit=1&appid={openweathermap_api_key}'
         geo_response = get(geo_url).json()
 
-        if not geo_response:
+        if not isinstance(geo_response, list) or not geo_response:
             return None
 
-        lat = geo_response[0]['lat']
-        lon = geo_response[0]['lon']
+        first = geo_response[0]
+        if 'lat' not in first or 'lon' not in first:
+            return None
+
+        lat = first['lat']
+        lon = first['lon']
 
         forecast = []
 
@@ -29,7 +45,7 @@ def get_uv_forecast(location: str, openweathermap_api_key: str):
 
             # For forecast days beyond today, use a reasonable estimate
             # (OpenWeatherMap's UV API primarily gives current UV)
-            uv_value = uv_response.get('value', 5)  # Default to moderate UV
+            uv_value = uv_response.get('value', 5) if isinstance(uv_response, dict) else 5  # Default to moderate UV
 
             # Adjust UV based on day (simple heuristic)
             if i == 0:  # Today
@@ -46,11 +62,7 @@ def get_uv_forecast(location: str, openweathermap_api_key: str):
 
         return forecast
 
-    except Exception as e:
+    except Exception:
+        logger.exception("Error fetching UV forecast for location=%s", location)
         # Return default moderate UV values if API fails
-        forecast = []
-        for i in range(3):
-            date = datetime.now() + timedelta(days=i)
-            date_str = date.strftime("%Y-%m-%d")
-            forecast.append({'date': date_str, 'uv': 5})  # Default moderate UV
-        return forecast
+        return _default_uv_forecast()

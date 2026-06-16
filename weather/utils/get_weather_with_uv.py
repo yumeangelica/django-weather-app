@@ -1,8 +1,11 @@
+import logging
 from requests import get
 from datetime import datetime
 import pytz
 from django.core.cache import cache
 from weather.utils.get_current_uv_index import get_current_uv_index
+
+logger = logging.getLogger(__name__)
 
 def get_weather_with_uv(openweathermap_api_key: str, city: str):
     # Try to fetch from the cache
@@ -54,5 +57,6 @@ def get_weather_with_uv(openweathermap_api_key: str, city: str):
 
         return weather
 
-    except Exception as e:
+    except Exception:
+        logger.exception("Error fetching weather for city=%s", city)
         return None
