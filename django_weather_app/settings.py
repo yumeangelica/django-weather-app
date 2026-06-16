@@ -149,3 +149,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # GeoIP settings
 GEOIP_PATH = BASE_DIR / "geoip"
+
+# Logging
+# Console logging for the weather app. Debug-level details are shown only when
+# DEBUG is enabled; otherwise warnings and errors are surfaced.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'weather': {
+            'handlers': ['console'],
+            'level': 'DEBUG' if DEBUG else 'WARNING',
+            'propagate': False,
+        },
+    },
+}
