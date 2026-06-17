@@ -14,15 +14,16 @@
 </head>
 
 <body>
+  <a href="#main" class="skip-link">Skip to content</a>
   <div class="container">
     <header class="header">
       <h1>3-Day Forecast</h1>
       <p>{{ city|capfirst }}</p>
     </header>
 
-    <main class="main-content">
+    <main class="main-content" id="main">
       <nav class="nav-container nav-center">
-        <a href="/" class="button">← Back to Search</a>
+        <a href="/" class="button"><span aria-hidden="true">←</span> Back to Search</a>
         <a href="/?city={{ city }}&option=weather" class="button">Current Weather</a>
       </nav>
 
@@ -30,11 +31,12 @@
         <!-- Desktop Table -->
         <div class="forecast-table-wrapper">
           <table class="forecast-table">
+            <caption class="sr-only">3-day hourly forecast for {{ city|capfirst }}</caption>
             <thead>
               <tr>
-                <th class="sticky-left"></th>
+                <th class="sticky-left"><span class="sr-only">Metric</span></th>
                 {% for date, day_data in forecast.items %}
-                <th class="forecast-column-header" colspan="{{ day_data.forecasts|length }}">
+                <th class="forecast-column-header" scope="colgroup" colspan="{{ day_data.forecasts|length }}">
                   {{ day_data.formatted_date }}
                 </th>
                 {% endfor %}
@@ -42,7 +44,7 @@
             </thead>
             <tbody>
               <tr>
-                <td class="sticky-left">Time</td>
+                <th scope="row" class="sticky-left">Time</th>
                 {% for day_data in forecast.values %}
                 {% for forecast in day_data.forecasts %}
                 <td class="forecast-column-cell">{{ forecast.hour }}</td>
@@ -50,7 +52,7 @@
                 {% endfor %}
               </tr>
               <tr>
-                <td class="sticky-left">Temperature</td>
+                <th scope="row" class="sticky-left">Temperature</th>
                 {% for day_data in forecast.values %}
                 {% for forecast in day_data.forecasts %}
                 <td class="forecast-column-cell">{{ forecast.temperature }}°C</td>
@@ -58,7 +60,7 @@
                 {% endfor %}
               </tr>
               <tr>
-                <td class="sticky-left">Weather</td>
+                <th scope="row" class="sticky-left">Weather</th>
                 {% for day_data in forecast.values %}
                 {% for forecast in day_data.forecasts %}
                 <td class="forecast-column-cell">{{ forecast.description }}</td>
@@ -66,7 +68,7 @@
                 {% endfor %}
               </tr>
               <tr>
-                <td class="sticky-left">Humidity</td>
+                <th scope="row" class="sticky-left">Humidity</th>
                 {% for day_data in forecast.values %}
                 {% for forecast in day_data.forecasts %}
                 <td class="forecast-column-cell">{{ forecast.humidity }}%</td>
@@ -74,7 +76,7 @@
                 {% endfor %}
               </tr>
               <tr>
-                <td class="sticky-left">Wind Speed</td>
+                <th scope="row" class="sticky-left">Wind Speed</th>
                 {% for day_data in forecast.values %}
                 {% for forecast in day_data.forecasts %}
                 <td class="forecast-column-cell">{{ forecast.wind_speed }} m/s</td>
@@ -82,7 +84,7 @@
                 {% endfor %}
               </tr>
               <tr>
-                <td class="sticky-left">UV Index</td>
+                <th scope="row" class="sticky-left">UV Index</th>
                 {% for day_data in forecast.values %}
                 {% for forecast in day_data.forecasts %}
                 <td class="forecast-column-cell">{{ forecast.uv_index|default:"N/A" }}</td>

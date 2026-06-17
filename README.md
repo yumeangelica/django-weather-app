@@ -17,7 +17,8 @@ A Django-based web application that provides real-time weather data and a 3-day 
 
 - **Backend**: Django (Python) with Gunicorn
 - **Frontend**: HTML, CSS (with responsive design)
-- **Web Server**: Nginx (reverse proxy and static files)
+- **Static Files**: WhiteNoise (compressed static file serving from the app)
+- **Web Server**: Nginx (reverse proxy)
 - **APIs**: [OpenWeatherMap API](https://openweathermap.org/api)
 - **Geolocation**: GeoIP2 database for IP-based city detection
 - **Containerization**: Docker & Docker Compose
@@ -75,9 +76,11 @@ A Django-based web application that provides real-time weather data and a 3-day 
    - Follow instructions in `geoip/README.md` to download the GeoLite2 database
    - This is required for IP-based geolocation functionality
 
-4. Start development server:
+4. Run migrations and start the development server:
 
    ```bash
+   python manage.py migrate
+   python manage.py collectstatic
    python manage.py runserver
    ```
 
@@ -88,45 +91,6 @@ A Django-based web application that provides real-time weather data and a 3-day 
 - Make changes to HTML/CSS/Python files
 - Refresh your browser (Cmd+R / Ctrl+R) to see changes
 - Django automatically restarts when Python files change
-
-1. Clone and navigate:
-
-   ```bash
-   git clone https://github.com/yumeangelica/django-weather-app.git
-   cd django-weather-app
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Get your API key:
-
-   - Sign up at [OpenWeatherMap](https://home.openweathermap.org/users/sign_up)
-   - Create a `.env` file:
-     ```
-     OPENWEATHERMAP_API_KEY=your_openweathermap_api_key
-     SECRET_KEY=your_django_secret_key
-     DEBUG=True
-     ALLOWED_HOSTS=localhost,127.0.0.1
-     DEV_TEST_IP=your_ip_for_testing  # Optional: for local geolocation testing
-     ```
-
-4. **Download GeoIP database**:
-
-   - Follow instructions in `geoip/README.md` to download the GeoLite2 database
-
-5. Run migrations and start server:
-
-   ```bash
-   python manage.py migrate
-   python manage.py collectstatic
-   python manage.py runserver
-   ```
-
-6. Visit: http://127.0.0.1:8000
 
 ## Azure Deployment
 

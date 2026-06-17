@@ -14,33 +14,26 @@
 </head>
 
 <body>
+  <a href="#main" class="skip-link">Skip to content</a>
   <div class="container">
     <header class="header">
       <h1>Django Weather App</h1>
       <p>Your beautiful weather companion</p>
     </header>
 
-    <main class="main-content">
+    <main class="main-content" id="main">
       {% if error_message %}
       <div class="error-message" role="alert">
-        {{ error_message }}
+        <span class="error-message-text">{{ error_message }}</span>
+        <button type="button" class="error-close" aria-label="Dismiss message">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          const errorMsg = document.querySelector('.error-message');
-          if (errorMsg) {
-            setTimeout(() => {
-              errorMsg.style.opacity = '0';
-              errorMsg.style.transition = 'opacity 0.4s ease';
-              setTimeout(() => errorMsg.style.display = 'none', 400);
-            }, 5000);
-          }
-        });
-      </script>
       {% endif %}
 
       <form method="GET" action="{% url 'index' %}" class="search-form">
         <div class="search-box">
+          <label for="city" class="sr-only">City name</label>
           <input
             type="text"
             id="city"
@@ -53,8 +46,8 @@
           >
         </div>
 
-        <div class="radio-group">
-          <p>Choose what you'd like to see:</p>
+        <fieldset class="radio-group">
+          <legend>Choose what you'd like to see:</legend>
 
           <label class="radio-option">
             <input type="radio" id="current_weather" name="option" value="weather" checked>
@@ -71,7 +64,7 @@
               <small>Hourly predictions for the next 3 days</small>
             </span>
           </label>
-        </div>
+        </fieldset>
 
         <button type="submit" class="button">
           Get Weather
@@ -98,6 +91,10 @@
     document.querySelector('input[type="radio"]:checked')
       ?.closest('.radio-option')
       ?.classList.add('checked');
+
+    document.querySelector('.error-close')?.addEventListener('click', function () {
+      this.closest('.error-message')?.remove();
+    });
   </script>
 </body>
 
