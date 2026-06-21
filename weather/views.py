@@ -1,19 +1,14 @@
 # weather/views.py
 
 import logging
+from django.conf import settings
 from django.shortcuts import render
-from dotenv import load_dotenv
-import os
 
 from weather.utils.get_weather_with_uv import get_weather_with_uv
 from weather.utils.get_weather_forecast import get_weather_forecast
 from weather.utils import geo
 
 logger = logging.getLogger(__name__)
-
-# Load environment variables from .env file
-load_dotenv()
-openweathermap_api_key = os.getenv('OPENWEATHERMAP_API_KEY')
 
 # Maximum accepted length for a city name from user input.
 MAX_CITY_LENGTH = 100
@@ -44,12 +39,12 @@ def index(request):
         if not is_valid_city(city):
             error_message = 'Sorry, that does not look like a valid city name.'
         elif option == "weather":
-            weather = get_weather_with_uv(openweathermap_api_key, city)  # type: ignore
+            weather = get_weather_with_uv(settings.OPENWEATHERMAP_API_KEY, city)
             if weather:
                 return render(request, 'current_weather.html', {'weather': weather, 'city': city})
             error_message = f'Sorry, the weather data for {city.capitalize()} could not be retrieved.'
         elif option == "forecast":
-            forecast = get_weather_forecast(openweathermap_api_key, city)  # type: ignore
+            forecast = get_weather_forecast(settings.OPENWEATHERMAP_API_KEY, city)
             if forecast:
                 return render(request, 'forecast.html', {'forecast': forecast, 'city': city})
             error_message = f'Sorry, the forecast data for {city.capitalize()} could not be retrieved.'
@@ -63,7 +58,7 @@ def current_weather_view(request):
     if not is_valid_city(city):
         return render(request, '404.html', {'error_message': 'Could not determine your city.'}, status=404)
 
-    weather = get_weather_with_uv(openweathermap_api_key, city)  # type: ignore
+    weather = get_weather_with_uv(settings.OPENWEATHERMAP_API_KEY, city)
     if weather:
         return render(request, 'current_weather.html', {'weather': weather, 'city': city})
     return render(

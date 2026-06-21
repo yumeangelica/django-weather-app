@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir --upgrade pip \
 COPY . .
 
 # Collect static files
-RUN python manage.py collectstatic --noinput
+RUN SECRET_KEY=build-time-secret DEBUG=False ALLOWED_HOSTS=localhost python manage.py collectstatic --noinput
 
 # Create a non-root user
 RUN adduser --disabled-password --gecos '' appuser \
@@ -32,6 +32,9 @@ USER appuser
 
 # Expose port
 EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/', timeout=5).read()"
 
 # Run gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "django_weather_app.wsgi:application"]

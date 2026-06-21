@@ -41,7 +41,21 @@ Required environment variables (set in `.env` file):
 - `SECRET_KEY`: Django secret key (generate using `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`)
 - `DEBUG`: Set to `False` for production
 - `ALLOWED_HOSTS`: Comma-separated list of allowed hosts (include your Azure domain)
+- `CSRF_TRUSTED_ORIGINS`: Comma-separated list of trusted HTTPS origins for your Azure/custom domains
 - `OPENWEATHERMAP_API_KEY`: Your OpenWeatherMap API key
+
+Recommended production security settings:
+
+- `SECURE_SSL_REDIRECT=True`
+- `SESSION_COOKIE_SECURE=True`
+- `CSRF_COOKIE_SECURE=True`
+- `SECURE_HSTS_SECONDS=31536000` after confirming HTTPS works on the final domain
+- `SECURE_HSTS_INCLUDE_SUBDOMAINS=True` only if all subdomains should require HTTPS
+- `SECURE_HSTS_PRELOAD=True` only if the domain is ready for browser preload requirements
+
+Optional weather settings:
+
+- `UV_PEAK_VALUE`: Peak UV value used for solar-position UV estimates. Defaults to `8.0`.
 
 ## Local Development
 
@@ -117,6 +131,7 @@ Internet → Azure Load Balancer → Nginx → Django (Gunicorn)
 - **Django + Gunicorn**: Python web application
 - **WhiteNoise**: Backup static file serving
 - **SQLite**: Database (consider upgrading to PostgreSQL for production)
+- **GeoIP2 database**: Optional MaxMind database for IP-based city detection
 
 ## Configuration Files
 
@@ -149,6 +164,18 @@ Static files are handled by:
 1. **Nginx** (primary): Serves from `/static/` volume
 2. **WhiteNoise** (fallback): Django middleware for static files
 3. **Build time**: `collectstatic` runs during Docker build
+
+## GeoIP Database
+
+The MaxMind `GeoLite2-City.mmdb` database is intentionally not tracked in GitHub. Manual city search works without it, and the app falls back gracefully if the file is missing.
+
+To enable IP-based geolocation in Azure, provide the database privately at:
+
+```text
+geoip/GeoLite2-City.mmdb
+```
+
+Use a host-specific build step, mounted storage, or another private artifact flow. Do not commit the `.mmdb` file to GitHub.
 
 ## Database
 
@@ -197,6 +224,7 @@ az webapp log tail --name weather-app --resource-group weather-rg
 2. **Static files not loading**: Verify Nginx configuration and file paths
 3. **Environment variables not set**: Check Azure app settings
 4. **API key issues**: Verify OpenWeatherMap API key in environment
+5. **GeoIP fallback only**: Verify `geoip/GeoLite2-City.mmdb` exists in the deployed container or mounted storage
 
 ## Production Considerations
 
