@@ -3,6 +3,7 @@
 import logging
 from functools import lru_cache
 import os
+from pathlib import Path
 from ipware import get_client_ip  # type: ignore
 from django.contrib.gis.geoip2 import GeoIP2
 from django_weather_app import settings
@@ -12,6 +13,9 @@ logger = logging.getLogger(__name__)
 @lru_cache
 def _geoip():
     """Return a cached GeoIP2 instance using the configured GEOIP_PATH."""
+    database_path = Path(settings.GEOIP_PATH) / "GeoLite2-City.mmdb"
+    if not database_path.exists():
+        raise FileNotFoundError(f"GeoIP database not found at {database_path}")
     return GeoIP2(settings.GEOIP_PATH)
 
 def get_client_ip_address(request):
@@ -36,6 +40,9 @@ def get_city_by_ip(ip: str | None) -> str | None:
         city = result.get("city")
         logger.debug("GeoIP city lookup result: %s", city)
         return city
+    except FileNotFoundError as exc:
+        logger.warning("%s", exc)
+        return None
     except Exception:
         logger.warning("GeoIP lookup failed for IP %s", ip, exc_info=True)
         return None

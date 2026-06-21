@@ -41,6 +41,7 @@
             class="search-bar"
             placeholder="Enter city name (e.g., Helsinki, London)"
             required
+            maxlength="100"
             autocomplete="address-level2"
             value="{{ city|default_if_none:'' }}"
           >

@@ -1,35 +1,57 @@
 import logging
-from requests import get
-from datetime import datetime
-import pytz
+from datetime import datetime, timedelta, timezone
 from django.core.cache import cache
-from weather.utils.get_current_uv_index import get_current_uv_index
+from weather.utils.openweather import OPENWEATHERMAP_BASE_URL, fetch_openweathermap_json, geocode_city
+from weather.utils.uv import estimate_uv_index
 
 logger = logging.getLogger(__name__)
 
+
+def _format_precipitation(value):
+    if value in (None, ''):
+        return '0 mm'
+    if isinstance(value, int | float):
+        return f'{value} mm'
+    return value
+
+
 def get_weather_with_uv(openweathermap_api_key: str, city: str):
-    # Try to fetch from the cache
-    cache_key = f'weather_{city}'
+    if not openweathermap_api_key or not openweathermap_api_key.strip():
+        logger.warning("OpenWeatherMap API key is missing.")
+        return None
+
+    cache_key = f'weather_{city.strip().lower()}'
     weather = cache.get(cache_key)
 
     if weather:
-        return weather  # If there is data in the cache, return it
-
-    # If the data is not in the cache, fetch it from the API
-    url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={openweathermap_api_key}&units=metric'
+        return weather
 
     try:
-        response = get(url).json()
-        lat = response['coord']['lat']
-        lon = response['coord']['lon']
-        uv_response = get_current_uv_index(openweathermap_api_key, lat, lon)
+        location = geocode_city(openweathermap_api_key, city)
+        if not location:
+            return None
 
-        # Get current date in the city's timezone
-        current_time = datetime.now(pytz.utc)
+        lat = location['lat']
+        lon = location['lon']
+        response = fetch_openweathermap_json(
+            f'{OPENWEATHERMAP_BASE_URL}/weather',
+            {
+                'lat': lat,
+                'lon': lon,
+                'appid': openweathermap_api_key,
+                'units': 'metric',
+            },
+        )
 
-        # Convert sunrise and sunset to hours only
-        sunrise_time = datetime.fromtimestamp(response['sys']['sunrise'], pytz.utc).strftime("%H:%M:%S")
-        sunset_time = datetime.fromtimestamp(response['sys']['sunset'], pytz.utc).strftime("%H:%M:%S")
+        if not isinstance(response, dict):
+            return None
+
+        timezone_offset = response.get('timezone', 0)
+        local_tz = timezone(timedelta(seconds=timezone_offset))
+        current_time = datetime.fromtimestamp(response.get('dt', datetime.now(timezone.utc).timestamp()), local_tz)
+
+        sunrise_time = datetime.fromtimestamp(response['sys']['sunrise'], local_tz).strftime("%H:%M:%S")
+        sunset_time = datetime.fromtimestamp(response['sys']['sunset'], local_tz).strftime("%H:%M:%S")
 
         weather = {
             'city': response['name'],
@@ -42,21 +64,20 @@ def get_weather_with_uv(openweathermap_api_key: str, city: str):
             'humidity': response['main']['humidity'],
             'wind_speed': round(response['wind']['speed']),
             'wind_direction': response['wind']['deg'],
-            'sunrise': sunrise_time,  # Sunrise time in hours
-            'sunset': sunset_time,    # Sunset time in hours
+            'sunrise': sunrise_time,
+            'sunset': sunset_time,
             'icon': response['weather'][0]['icon'],
-            'uv_index': uv_response,
+            'uv_index': estimate_uv_index(lat, lon, datetime.now(timezone.utc)),
             'cloudiness': response['clouds']['all'],
             'visibility': response.get('visibility', 'N/A'),
-            'rain': response.get('rain', {}).get('1h', '0 mm'),
-            'snow': response.get('snow', {}).get('1h', '0 mm')
+            'rain': _format_precipitation(response.get('rain', {}).get('1h')),
+            'snow': _format_precipitation(response.get('snow', {}).get('1h')),
         }
 
-        # Save the result in the cache for 10 minutes (600 seconds)
         cache.set(cache_key, weather, timeout=600)
 
         return weather
 
-    except Exception:
-        logger.exception("Error fetching weather for city=%s", city)
+    except (KeyError, TypeError, IndexError, ValueError):
+        logger.exception("Unexpected weather response for city=%s", city)
         return None
